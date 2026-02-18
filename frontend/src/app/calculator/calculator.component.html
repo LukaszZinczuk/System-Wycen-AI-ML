@@ -1,0 +1,170 @@
+<div class="calculator-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Pricing Calculator</h1>
+      <p>Calculate AI-powered pricing for your clients</p>
+    </div>
+    <div class="estimated-price" *ngIf="(estimatedPrice$ | async) as price">
+      <span class="label">Estimated</span>
+      <span class="value">{{ price | currency:'PLN':'symbol':'1.0-0' }}</span>
+    </div>
+  </div>
+
+  <div class="calculator-grid">
+    <!-- Form Section -->
+    <mat-card class="form-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>calculate</mat-icon>
+        <mat-card-title>Client Information</mat-card-title>
+        <mat-card-subtitle>Fill in the details to calculate pricing</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="pricingForm" (ngSubmit)="calculate()">
+          <!-- Company Selection -->
+          <div class="form-section">
+            <h3><mat-icon>business</mat-icon> Company</h3>
+            <mat-form-field appearance="outline">
+              <mat-label>Select Company</mat-label>
+              <mat-select formControlName="company_id">
+                <mat-option *ngFor="let c of companies" [value]="c.id">
+                  {{ c.name }}
+                </mat-option>
+              </mat-select>
+              <mat-icon matSuffix>arrow_drop_down</mat-icon>
+            </mat-form-field>
+          </div>
+
+          <!-- Basic Info -->
+          <div class="form-section">
+            <h3><mat-icon>info</mat-icon> Basic Information</h3>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Employees Count</mat-label>
+                <input matInput type="number" formControlName="employees_count">
+                <mat-icon matSuffix>people</mat-icon>
+                <mat-hint>Number of employees in company</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Region</mat-label>
+                <mat-select formControlName="region">
+                  <mat-option *ngFor="let r of regions" [value]="r">{{ r }}</mat-option>
+                </mat-select>
+                <mat-icon matSuffix>location_on</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div class="premium-toggle">
+              <mat-checkbox formControlName="premium_48h" color="primary">
+                <div class="premium-label">
+                  <mat-icon>bolt</mat-icon>
+                  <span>Premium 48h Service</span>
+                  <span class="premium-badge">+20%</span>
+                </div>
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <!-- AI Features -->
+          <div class="form-section ai-section">
+            <h3><mat-icon>psychology</mat-icon> AI Simulation Inputs</h3>
+            <p class="section-hint">These values feed into the ML model for scoring</p>
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Avg Order Value (PLN)</mat-label>
+                <input matInput type="number" formControlName="ml_feature_avg_order_value">
+                <mat-icon matSuffix>payments</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Historic Offers Count</mat-label>
+                <input matInput type="number" formControlName="ml_feature_offers_count">
+                <mat-icon matSuffix>history</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button mat-raised-button color="primary" type="submit" class="submit-btn"
+            [disabled]="pricingForm.invalid || loading">
+            <mat-icon>{{ loading ? 'hourglass_empty' : 'calculate' }}</mat-icon>
+            {{ loading ? 'Calculating...' : 'Calculate Price' }}
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Result Section -->
+    <mat-card class="result-card" *ngIf="result" [ngClass]="'priority-' + result.priority_level.toLowerCase()">
+      <div class="result-header">
+        <div class="priority-badge" [ngClass]="'badge-' + result.priority_level.toLowerCase()">
+          <mat-icon *ngIf="result.priority_level === 'VIP'">star</mat-icon>
+          {{ result.priority_level }}
+        </div>
+        <span class="offer-id">#{{ result.id }}</span>
+      </div>
+
+      <div class="price-display">
+        <div class="price-item base">
+          <span class="label">Base Price</span>
+          <span class="value">{{ result.base_price | currency:'PLN':'symbol':'1.0-0' }}</span>
+        </div>
+        <mat-icon class="arrow">arrow_forward</mat-icon>
+        <div class="price-item final">
+          <span class="label">Final Price</span>
+          <span class="value">{{ result.final_price | currency:'PLN':'symbol':'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="ai-breakdown">
+        <h3><mat-icon>psychology</mat-icon> AI Scoring Breakdown</h3>
+
+        <div class="score-main">
+          <div class="score-circle" [ngClass]="getScoreClass(result.ai_score)">
+            <span class="score-value">{{ result.ai_score }}</span>
+            <span class="score-label">AI Score</span>
+          </div>
+        </div>
+
+        <div class="score-details">
+          <div class="score-item">
+            <span class="label">ML Score (70%)</span>
+            <mat-progress-bar mode="determinate" [value]="result.ml_score" color="primary"></mat-progress-bar>
+            <span class="value">{{ result.ml_score }}</span>
+          </div>
+          <div class="score-item">
+            <span class="label">Rule Score (30%)</span>
+            <mat-progress-bar mode="determinate" [value]="result.rule_score" color="accent"></mat-progress-bar>
+            <span class="value">{{ result.rule_score }}</span>
+          </div>
+        </div>
+
+        <div class="discount-info" *ngIf="result.priority_level === 'VIP'">
+          <mat-icon>local_offer</mat-icon>
+          <span>VIP Discount Applied: <strong>5%</strong></span>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button mat-stroked-button (click)="result = null">
+          <mat-icon>refresh</mat-icon>
+          New Calculation
+        </button>
+        <button mat-raised-button color="primary">
+          <mat-icon>save</mat-icon>
+          Save Offer
+        </button>
+      </div>
+    </mat-card>
+
+    <!-- Placeholder when no result -->
+    <mat-card class="result-placeholder" *ngIf="!result">
+      <mat-icon>receipt_long</mat-icon>
+      <h3>No calculation yet</h3>
+      <p>Fill in the form and click "Calculate Price" to see the AI-powered pricing result</p>
+    </mat-card>
+  </div>
+</div>

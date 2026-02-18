@@ -1,0 +1,50 @@
+# FastAPI & Web
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Database
+sqlalchemy
+alembic
+psycopg2-binary
+
+# Validation & Settings
+pydantic[email]
+pydantic-settings
+
+# Authentication & Security
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==4.0.1
+
+# Machine Learning
+scikit-learn
+pandas
+numpy
+joblib
+
+# Async Tasks (Celery)
+celery[redis]
+redis
+
+# Utilities
+python-dotenv
+
+# Observability & Monitoring
+psutil
+
+# Testing
+pytest
+pytest-cov
+pytest-asyncio
+httpx
+
+# Code Quality
+flake8
+black
+isort
+mypy
+
+# Security Scanning
+bandit
+safety
