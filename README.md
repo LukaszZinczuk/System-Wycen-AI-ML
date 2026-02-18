@@ -1,6 +1,6 @@
 # System Wycen AI+ML (B2B Pricing Engine)
 
-[![CI/CD Pipeline](https://github.com/yourusername/pricing-system/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/pricing-system/actions)
+[![CI/CD Pipeline](https://github.com/LukaszZinczuk/System-Wycen-AI-ML/actions/workflows/ci.yml/badge.svg)](https://github.com/LukaszZinczuk/System-Wycen-AI-ML/actions)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![Angular 16](https://img.shields.io/badge/angular-16-red.svg)](https://angular.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -409,6 +409,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ## 👨‍💻 Author
+
+**Łukasz Zinczuk** - [GitHub](https://github.com/LukaszZinczuk)
 
 Created for portfolio demonstration purposes.
 
