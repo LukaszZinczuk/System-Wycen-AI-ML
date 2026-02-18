@@ -99,8 +99,8 @@ A complete pricing engine for B2B services that uses **hybrid AI scoring** (Mach
 
 ### 1. Clone & Run
 ```bash
-git clone https://github.com/yourusername/pricing-system.git
-cd pricing-system
+git clone https://github.com/LukaszZinczuk/System-Wycen-AI-ML.git
+cd System-Wycen-AI-ML
 docker-compose up --build
 ```
 
